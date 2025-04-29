@@ -145,7 +145,6 @@ export default function Home() {
 					})
 				},
 				once: true,
-				markers: true,
 			})
 		}
 
