@@ -6,7 +6,6 @@ import Map from '@/components/Map/Map'
 import Text from '@/components/Text'
 import Heading from '@/components/typo/Heading'
 import Paragraph from '@/components/typo/Paragraph'
-import Image from 'next/image'
 import '../styles/global.scss'
 
 import gsap from 'gsap'
@@ -17,42 +16,21 @@ import SlideShow from '@/components/SlideShow'
 import useSlideShowStore from '@/store/slideShow.store'
 import LetterFx from '@/lib/LetterFX'
 import { Finger } from '@/components/icons/IconFinger'
-import { Location } from '@/components/icons/IconLocation'
-import { Rings } from '@/components/icons/IconRings'
-import { Dinner } from '@/components/icons/IconDinner'
-import { Cake } from '@/components/icons/IconCake'
-import { Clock } from '@/components/icons/IconClock'
-import PlanItem from '@/components/PlanItem'
-import Color from '@/components/Color'
 import Form from '@/components/Form'
 import FormModal from '@/components/FormModal'
 import useFormState from '@/store/form.store'
-import { colorsPalette } from '@/data/colors.data'
-import { GlitchFx } from '@/lib/GlitchFX'
-import TelegramLink from '@/components/TelegramLink'
 import Link from 'next/link'
 import { Heart } from '@/components/icons/IconHeart'
-import {
-	Dropdown,
-	DropdownTrigger,
-	DropdownMenu,
-	DropdownItem,
-} from '@heroui/dropdown'
-import { Button } from '@nextui-org/button'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Translations, useTranslation } from '@/lib/i18n'
 import { useLangStore } from '@/store/lang.store'
 
 gsap.registerPlugin(ScrollTrigger)
 
-type Lang = 'RU' | 'EN'
-
 export default function Home() {
-	const router = useRouter()
 	const [isMapLoaded, setIsMapLoaded] = useState(false)
 	const { isSlideShowComplete } = useSlideShowStore()
 	const { showFormModal } = useFormState()
-	const [detailsWord, setDetailsWord] = useState('Details')
 	const screenRefs = useRef<
 		Record<
 			number,
@@ -70,22 +48,20 @@ export default function Home() {
 
 	const searchParams = useSearchParams()
 
-	const { t, lang } = useTranslation()
+	const { t } = useTranslation()
 	const setLang = useLangStore(state => state.setLang)
 
 	const containerRef = useRef<HTMLDivElement>(null)
 	const addressRef = useRef<HTMLAnchorElement>(null)
 	const fingerRef = useRef<SVGSVGElement>(null)
-	const glitchRef = useRef<HTMLDivElement>(null)
 	const letterFxTriggerRef1 = useRef<() => void>()
 	const letterFxTriggerRef2 = useRef<() => void>()
 	const letterFxTriggerRef3 = useRef<() => void>()
 	const letterFxTriggerRef4 = useRef<() => void>()
+	const letterFxTriggerRef5 = useRef<() => void>()
+	const letterFxTriggerRef6 = useRef<() => void>()
 	const lenis = useLenis()
 	const address = t('address') as Translations['RU']['address']
-	const details = t('details') as Translations['RU']['details']
-	const plan = t('plan') as { time: string; text: string }[]
-	const icons = [Location, Rings, Dinner, Cake, Clock]
 
 	const refFunctions = useRef<Record<string, (el: HTMLElement | null) => void>>(
 		{}
@@ -138,6 +114,23 @@ export default function Home() {
 						letterFxTriggerRef3,
 						letterFxTriggerRef4,
 					]
+
+					letters.forEach(item => {
+						item.current?.()
+					})
+				},
+				once: true,
+			})
+		}
+
+		const age = screenRefs.current[1]?.text
+
+		if (age) {
+			ScrollTrigger.create({
+				trigger: age,
+				start: 'bottom bottom',
+				onEnter: () => {
+					const letters = [letterFxTriggerRef5, letterFxTriggerRef6]
 
 					letters.forEach(item => {
 						item.current?.()
@@ -289,27 +282,6 @@ export default function Home() {
 		}
 	}, [showFormModal, lenis])
 
-	useEffect(() => {
-		if (!glitchRef.current) return
-
-		const handleAnimationIteration = () => {
-			setTimeout(() => {
-				setDetailsWord('Fabric?')
-				setTimeout(() => {
-					setDetailsWord('Details')
-				}, 250)
-			}, 175)
-		}
-
-		const element = glitchRef.current
-
-		element.onanimationiteration = handleAnimationIteration
-
-		return () => {
-			element.onanimationiteration = null
-		}
-	}, [glitchRef])
-
 	function HtmlText({ text }: { text: string }) {
 		return <span dangerouslySetInnerHTML={{ __html: text }} />
 	}
@@ -323,86 +295,61 @@ export default function Home() {
 
 			<FormModal />
 
-			<Dropdown
-				backdrop='blur'
-				shouldCloseOnScroll={false}
-				motionProps={{
-					initial: { opacity: 0 },
-					animate: { opacity: 1 },
-					exit: { opacity: 0 },
-				}}
-				classNames={{
-					base: 'fixed right-4 bottom-16 z-20 w-20',
-				}}
-				onOpenChange={isOpen => {
-					if (isOpen) {
-						lenis?.stop()
-					} else {
-						lenis?.start()
-					}
-				}}
-			>
-				<DropdownTrigger>
-					<Button
-						className='capitalize fixed right-4 bottom-4 z-20 bg-black text-white'
-						variant='solid'
-					>
-						{lang}
-					</Button>
-				</DropdownTrigger>
-
-				<DropdownMenu
-					disallowEmptySelection
-					aria-label='Single selection example'
-					selectedKeys={new Set([lang])}
-					selectionMode='single'
-					onSelectionChange={keys => {
-						const selected = Array.from(keys)[0] as Lang
-
-						setLang(selected)
-
-						const params = new URLSearchParams(searchParams.toString())
-
-						if (selected === 'RU') {
-							params.set('lang', 'ru')
-						} else {
-							params.set('lang', 'en')
-						}
-
-						router.replace(`?${params.toString()}`, { scroll: false }) // Обновляем урл
-					}}
-				>
-					<DropdownItem key='RU'>RU</DropdownItem>
-					<DropdownItem key='EN'>EN</DropdownItem>
-				</DropdownMenu>
-			</Dropdown>
 			<div ref={containerRef} className='relative bg-stone-50 z-10 '>
 				<div className='relative z-20'>
 					<SlideShow totalImages={6} />
 
-					{/* Dear Guests! */}
-					<Block grid className='py-10'>
+					{/* Начало */}
+					<Block className='py-10 items-center flex'>
 						<Text className='py-10 xl:py-20'>
-							<Heading text='Dear Guests!' ref={getRefFunction(1, 'heading')} />
+							<Heading text='Что?' ref={getRefFunction(1, 'heading')} />
 							<Paragraph ref={getRefFunction(1, 'text')}>
 								<HtmlText text={t('guests')} />
 							</Paragraph>
 						</Text>
-						<Image
-							src='/img/block-1.jpg'
-							alt=''
-							width={2560}
-							height={1440}
-							className='w-full h-[90vh] max-w-md mx-auto lg:max-h-[800px] object-cover object-left rounded-t-full'
-							ref={getRefFunction(1, 'image')}
-						/>
 					</Block>
 
-					{/* When? */}
+					{/* Начало */}
+					<Block className='py-10 items-center flex justify-center'>
+						<Text className='py-10 xl:py-20 w-fit'>
+							<div
+								className='text-[256px] bg-clip-text bg-[length:60px_60px] bg-repeat bg-slate-950/80 bg-[url("/img/pattern-50.png")] text-transparent'
+								ref={getRefFunction(4, 'text')}
+							>
+								<span>
+									<LetterFx
+										speed='slow'
+										trigger='custom'
+										duration={2000}
+										initialText='0'
+										finalText='5'
+										onTrigger={triggerFn5 => {
+											letterFxTriggerRef5.current = triggerFn5
+										}}
+										charset={['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']}
+									/>
+
+									<LetterFx
+										speed='slow'
+										trigger='custom'
+										duration={1500}
+										initialText='0'
+										finalText='0'
+										charset={['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']}
+										onTrigger={triggerFn6 => {
+											letterFxTriggerRef6.current = triggerFn6
+										}}
+									/>
+								</span>
+							</div>
+						</Text>
+					</Block>
+
+					{/* Когда? */}
 					<Block className='flex items-center justify-center'>
 						<Text>
 							<Heading
-								text='When?'
+								text='Когда?'
 								ref={getRefFunction(2, 'heading')}
 								className='text-center'
 							/>
@@ -417,7 +364,7 @@ export default function Home() {
 										trigger='custom'
 										duration={2500}
 										initialText='0'
-										finalText='1'
+										finalText='2'
 										onTrigger={triggerFn1 => {
 											letterFxTriggerRef1.current = triggerFn1
 										}}
@@ -428,7 +375,7 @@ export default function Home() {
 										trigger='custom'
 										duration={2000}
 										initialText='0'
-										finalText='1'
+										finalText='4'
 										onTrigger={triggerFn2 => {
 											letterFxTriggerRef2.current = triggerFn2
 										}}
@@ -451,21 +398,27 @@ export default function Home() {
 										trigger='custom'
 										duration={1000}
 										initialText='0'
-										finalText='6'
+										finalText='5'
 										onTrigger={triggerFn4 => {
 											letterFxTriggerRef4.current = triggerFn4
 										}}
 									/>
 									.2025
 								</span>
+								<Paragraph
+									customSize
+									className='text-center text-4xl md:text-5xl whitespace-nowrap mt-10'
+								>
+									Ровно в 15:00
+								</Paragraph>
 							</Paragraph>
 						</Text>
 					</Block>
 
-					{/* Where? */}
+					{/* Где? */}
 					<Block className='flex flex-col justify-center min-h-screen py-20'>
 						<Text>
-							<Heading text='Where?' ref={getRefFunction(3, 'heading')} />
+							<Heading text='Где?' ref={getRefFunction(3, 'heading')} />
 							<Paragraph ref={getRefFunction(3, 'text')} className='opacity-0'>
 								<HtmlText text={address.placeText1} />
 								<br />
@@ -473,7 +426,7 @@ export default function Home() {
 									<HtmlText text={address.atAddress} />
 
 									<a
-										href='https://yandex.ru/maps/2/saint-petersburg/?ll=29.818303%2C60.170111&mode=routes&rtext=~60.170556%2C29.813107&rtt=taxi&ruri=~ymapsbm1%3A%2F%2Forg%3Foid%3D1059804378&z=17'
+										href='https://yandex.ru/maps/29492/altay/?ll=84.262912%2C49.714914&mode=poi&poi%5Bpoint%5D=84.263075%2C49.715063&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D55227339221&z=18'
 										target='_blank'
 										ref={addressRef}
 										className=' border px-1 pb-1 border-slate-950/0 rounded-md relative inline-block translate-y-0.5  will-change-transform'
@@ -486,7 +439,6 @@ export default function Home() {
 										/>
 									</a>
 									<br />
-									<HtmlText text={address.hallName} />
 								</span>
 							</Paragraph>
 							<Map
@@ -496,120 +448,12 @@ export default function Home() {
 						</Text>
 					</Block>
 
-					{/* Dress-code */}
-					<Block className='flex flex-col items-center justify-center gap-y-10'>
-						<Heading
-							text='Dress-code'
-							ref={getRefFunction(9, 'heading')}
-							className='text-center'
-						/>
-						<Paragraph
-							className='text-center flex flex-col gap-y-4'
-							ref={getRefFunction(9, 'text')}
-						>
-							<span>
-								<HtmlText text={t('dressCode')} />
-							</span>
-							<span className='text-base 2xl:text-xl text-slate-950/80'>
-								<HtmlText text={t('suit')} />
-							</span>
-							<span className='text-sm 2xl:text-lg text-slate-950/80'>
-								<HtmlText text={t('whiteColor')} />
-							</span>
-						</Paragraph>
-						<div
-							className='grid grid-cols-2 md:grid-cols-3 items-center justify-center flex-wrap gap-4'
-							ref={getRefFunction(9, 'block')}
-						>
-							{colorsPalette.map(color => (
-								<Color color={color.color} key={color.name} />
-							))}
-						</div>
-					</Block>
-
-					{/* Plan of the Day */}
-					<Block className='flex flex-col justify-center py-40'>
-						<Text>
-							<Heading
-								text='Plan of the Day'
-								ref={getRefFunction(4, 'heading')}
-							/>
-						</Text>
-						<div>
-							<div className='mt-10 lg:mt-16 flex flex-col gap-y-3'>
-								{plan.map((item, index) => {
-									const Icon = icons[index]
-									return (
-										<PlanItem
-											key={item.time}
-											time={item.time}
-											text={item.text}
-											ref={getRefFunction(4 + index, 'plan')}
-										>
-											<Icon className='size-full' />
-										</PlanItem>
-									)
-								})}
-							</div>
-						</div>
-					</Block>
-
-					{/* Details */}
-					<Block className='flex flex-col justify-center'>
-						<Text
-							ref={getRefFunction(11, 'heading')}
-							className='text-center max-w-4xl mx-auto'
-						>
-							<GlitchFx
-								speed='fast'
-								trigger='instant'
-								continuous
-								ref={glitchRef}
-							>
-								<Heading text={detailsWord} />
-							</GlitchFx>
-							<Paragraph
-								ref={getRefFunction(11, 'text')}
-								className='flex flex-col gap-y-8'
-							>
-								<span>
-									<HtmlText text={details.warmWishes} />
-								</span>
-
-								<span>
-									<HtmlText text={details.organizerHelp} />
-									<TelegramLink person='a' />
-								</span>
-
-								<span>
-									<HtmlText text={details.noFlowers} />{' '}
-									<span className='inline-flex items-center gap-4'>
-										{details.nekoName}
-										<Image
-											width={40}
-											height={40}
-											alt='Neko'
-											src='/img/sticker-neko.webp'
-											className='aspect-[0.76] w-10'
-										/>
-									</span>
-								</span>
-
-								<span className='text-sm 2xl:text-base text-slate-950/80'>
-									<HtmlText text={details.nekoGift} />
-								</span>
-							</Paragraph>
-						</Text>
-					</Block>
-					{/* A few questions */}
+					{/* Анкета */}
 					<Block className='flex flex-col justify-center'>
 						<Heading
-							text='A few questions'
+							text='А теперь к главному'
 							ref={getRefFunction(10, 'heading')}
 						/>
-						<Paragraph className='mt-4' ref={getRefFunction(10, 'text')}>
-							<HtmlText text={t('quetionaireTitle')} />
-						</Paragraph>
 
 						<Form ref={getRefFunction(10, 'form')} className='mt-4 lg:mt-20' />
 					</Block>

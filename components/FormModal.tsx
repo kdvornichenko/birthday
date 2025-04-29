@@ -11,9 +11,9 @@ import React from 'react'
 import TelegramLink from './TelegramLink'
 import { Snippet } from '@nextui-org/snippet'
 import { Button } from '@nextui-org/button'
-import { Heart } from './icons/IconHeart'
 import useFormState from '@/store/form.store'
 import { Translations, useTranslation } from '@/lib/i18n'
+import { BirthdayCake } from './icons/IconBirthdayCake'
 
 const FormModal = () => {
 	const {
@@ -51,22 +51,10 @@ const FormModal = () => {
 								willBeAttended ? (
 									<div className='flex flex-col gap-y-4'>
 										<span>{formSendedTranslation.successAttendedTitle}</span>
-										<span>
-											{formSendedTranslation.successAttendedHelp}{' '}
-											<TelegramLink person='k' /> <TelegramLink person='v' />
-										</span>
-										<span>
-											{formSendedTranslation.successAttendedOrganizer}{' '}
-											<TelegramLink person='a' />
-										</span>
 									</div>
 								) : (
 									<div className='flex flex-col gap-y-4'>
 										<span>{formSendedTranslation.successNotAttendedTitle}</span>
-										<span>
-											{formSendedTranslation.successNotAttendedHelp}{' '}
-											<TelegramLink person='k' /> <TelegramLink person='v' />
-										</span>
 									</div>
 								)
 							) : (
@@ -104,14 +92,13 @@ const FormModal = () => {
 							)}
 						</ModalBody>
 
-						<ModalFooter className='flex items-center justify-between'>
-							<p className='text-lg font-kudry'>K&V</p>
+						<ModalFooter className='flex items-center justify-end'>
 							<Button
 								color='primary'
 								className='bg-slate-950'
 								onPress={onClose}
 							>
-								<Heart className='size-4' />
+								<BirthdayCake className='size-7' />
 							</Button>
 						</ModalFooter>
 					</>

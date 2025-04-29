@@ -15,7 +15,6 @@ import ReactInputMask from 'react-input-mask'
 import DOMPurify from 'dompurify'
 import axios from 'axios'
 
-import { Heart } from './icons/IconHeart'
 import { SparkleFx } from '@/lib/SparkleFx'
 import { Translations, useTranslation } from '@/lib/i18n'
 import { formItems } from '@/data/form.data'
@@ -54,7 +53,7 @@ const Form = forwardRef<HTMLFormElement, TForm>(({ className }, ref) => {
 
 	const [phone, setPhone] = useState('')
 	const [checkboxValues, setCheckboxValues] = useState<string[]>([
-		'alcohol-nope',
+		'alcohol-Не пью',
 	])
 	const [selectedRadios, setSelectedRadios] = useState<Record<string, string>>(
 		{}
@@ -116,19 +115,19 @@ const Form = forwardRef<HTMLFormElement, TForm>(({ className }, ref) => {
 
 	const handleCheckboxChange = (value: string) => {
 		setCheckboxValues(prev => {
-			if (value === 'alcohol-nope') {
-				return ['alcohol-nope']
+			if (value === 'alcohol-Не пью') {
+				return ['alcohol-Не пью']
 			} else if (prev.includes(value)) {
 				return prev.filter(v => v !== value)
 			} else {
-				return [...prev.filter(v => v !== 'alcohol-nope'), value]
+				return [...prev.filter(v => v !== 'alcohol-Не пью'), value]
 			}
 		})
 	}
 
 	const handleRadioChange = (groupId: string, value: string) => {
 		if (groupId === 'attendance') {
-			setWillBeAttended(value !== 'attendance-nope')
+			setWillBeAttended(value !== 'attendance-не приду')
 		}
 		setSelectedRadios(prev => ({ ...prev, [groupId]: value }))
 	}
@@ -138,27 +137,11 @@ const Form = forwardRef<HTMLFormElement, TForm>(({ className }, ref) => {
 
 		if (!selectedRadios['attendance'])
 			newErrors['attendance'] = form.fieldErrors.attendance
-		if (!selectedRadios['transport'] && willBeAttended)
-			newErrors['transport'] = form.fieldErrors.transport
-		if (
-			selectedRadios['attendance'] === 'couple' &&
-			!coupleNameRef.current?.value.trim()
-		)
-			newErrors['attendance'] = form.fieldErrors.coupleName
 		if (!checkboxValues.length) newErrors['alcohol'] = form.fieldErrors.alcohol
 		if (!inputNameRef.current?.value?.trim())
 			newErrors['name'] = form.fieldErrors.name
 		if (!inputSurnameRef.current?.value?.trim())
 			newErrors['surname'] = form.fieldErrors.surname
-		if (
-			selectedRadios['allergies'] === 'yeap' &&
-			!allergiesRef.current?.value.trim()
-		)
-			newErrors['allergies'] = form.fieldErrors.allergies
-		if (!phone.trim() && willBeAttended)
-			newErrors['phone'] = form.fieldErrors.phone
-		if (willBeAttended && !aboutRef.current?.value?.trim())
-			newErrors['about'] = form.fieldErrors.about
 
 		setErrors(newErrors)
 		return Object.keys(newErrors).length === 0
@@ -195,22 +178,15 @@ const Form = forwardRef<HTMLFormElement, TForm>(({ className }, ref) => {
 		const apiUrl = `https://api.telegram.org/bot${botToken}/sendMessage`
 
 		const message = !willBeAttended
-			? `${formData.name} ${formData.surname} не придет
-${formData.phone && `Телефон: ${formData.phone}`}
-${formData.telegram && `Telegram: @${formData.telegram}`}`
+			? `${formData.name} ${formData.surname} не придет`
 			: `Анкета гостя:
 ФИО: ${formData.name} ${formData.surname}
-Телефон: ${formData.phone}
-Telegram: @${formData.telegram}
 Присутствие: ${formData.radios.attendance || 'Не указано'}
-Транспорт: ${formData.radios.transport || 'Не указано'}
-Аллергии: ${formData.allergies || 'Нет'}
 Алкоголь: ${
 					formData.checkboxValues['alcohol']?.length
 						? formData.checkboxValues['alcohol'].join(', ')
 						: 'Не выбрано'
 			  }
-Еда: ${formData.radios.meal || 'Не указано'}
 Дополнительная информация: ${formData.about || 'Нет'}`
 
 		try {
@@ -281,9 +257,6 @@ Telegram: @${formData.telegram}
 										value={`${item.id}-${opt.value}`}
 										classNames={{
 											wrapper: 'group-data-[selected=true]:border-slate-950',
-											control: cn(
-												'group-data-[selected=true]:bg-[url("/img/heart.svg")] bg-transparent bg-contain bg-no-repeat bg-center w-2.5 h-2.5 rounded-none'
-											),
 											label: 'text-xl',
 										}}
 									>
@@ -341,7 +314,6 @@ Telegram: @${formData.telegram}
 									onChange={() =>
 										handleCheckboxChange(`${item.id}-${opt.value}`)
 									}
-									icon={<Heart color='#DDDDDC' />}
 									classNames={{
 										wrapper: 'group-data-[selected=true]:border-slate-950',
 										label: 'text-xl',
@@ -424,7 +396,6 @@ Telegram: @${formData.telegram}
 							placeholder={getItemLabel(item.id)}
 							variant='bordered'
 							isDisabled={isDisabled(item.id)}
-							isRequired
 							classNames={{
 								inputWrapper: cn(
 									'transition-all mt-4 lg:mt-6',

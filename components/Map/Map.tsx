@@ -38,9 +38,9 @@ const Map = forwardRef<HTMLDivElement, TMap>(({ className }, ref) => {
 
 	const params = useMemo(
 		() => ({
-			center: [30.314997, 59.938784],
-			marker: [29.813082, 60.170556],
-			zoom: 8,
+			center: [84.263085, 49.71481],
+			marker: [84.263085, 49.715],
+			zoom: 14,
 			zoomDuration: 1500,
 		}),
 		[]
@@ -66,7 +66,7 @@ const Map = forwardRef<HTMLDivElement, TMap>(({ className }, ref) => {
 			onEnter: () => {
 				mapInstance.setLocation({
 					center: params.marker as LngLat,
-					zoom: 12,
+					zoom: 19,
 					duration: params.zoomDuration,
 					easing: 'ease-in-out',
 				})
@@ -74,7 +74,7 @@ const Map = forwardRef<HTMLDivElement, TMap>(({ className }, ref) => {
 				setTimeout(() => {
 					mapInstance.setLocation({
 						center: params.center as LngLat,
-						zoom: 8.5,
+						zoom: 14,
 						duration: params.zoomDuration,
 						easing: 'ease-in-out',
 					})
@@ -110,7 +110,7 @@ const Map = forwardRef<HTMLDivElement, TMap>(({ className }, ref) => {
 
 	return (
 		<div className={className ?? ''} ref={mergeRefs(ref, containerRef)}>
-			<YMapComponentsProvider apiKey={api} lang='en_US'>
+			<YMapComponentsProvider apiKey={api} lang='ru_RU'>
 				<YMap ref={mapRefCallback} location={params} mode='vector' theme='dark'>
 					<YMapDefaultSchemeLayer
 						customization={theme as VectorCustomization}

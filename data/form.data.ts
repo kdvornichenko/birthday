@@ -7,48 +7,19 @@ export const formItems: TFormItem[] = [
 		id: 'attendance',
 		type: 'radio',
 		options: [
-			{ value: 'solo', isDefault: true },
-			// { value: 'couple' },
-			{ value: 'nope' },
-		],
-	},
-	{
-		id: 'transport',
-		type: 'radio',
-		options: [
-			{ value: 'transfer' },
-			{ value: 'self', isDefault: true },
-		],
-	},
-	{
-		id: 'meal',
-		type: 'radio',
-		options: [
-			{ value: 'beef', isDefault: true },
-			{ value: 'fish' },
+			{ value: 'приду', isDefault: true },
+			{ value: 'не приду' },
 		],
 	},
 	{
 		id: 'alcohol',
 		type: 'checkbox',
 		options: [
-			{ value: 'red-dry' },
-			{ value: 'red-semi-sweet' },
-			{ value: 'white-dry' },
-			{ value: 'white-semi-sweet' },
-			{ value: 'champaign' },
-			{ value: 'nope', isDefault: true },
+			{ value: 'Вино' },
+			{ value: 'Водка' },
+			{ value: 'Коньяк' },
+			{ value: 'Не пью', isDefault: true },
 		],
 	},
-	{
-		id: 'allergies',
-		type: 'radio',
-		options: [
-			{ value: 'yeap' },
-			{ value: 'nope', isDefault: true },
-		],
-	},
-	{ id: 'phone', type: 'input' },
-	{ id: 'telegram', type: 'input' },
 	{ id: 'about', type: 'textarea' },
 ]
