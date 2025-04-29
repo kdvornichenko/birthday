@@ -1,6 +1,12 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react'
 import Block from '@/components/Block'
 import Map from '@/components/Map/Map'
 import Text from '@/components/Text'
@@ -98,8 +104,28 @@ export default function Home() {
 		}
 	}, [searchParams, setLang])
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		setIsMapLoaded(true)
+
+		console.log(screenRefs)
+
+		const age = screenRefs.current[4]?.text
+
+		if (age) {
+			ScrollTrigger.create({
+				trigger: age,
+				start: 'bottom bottom',
+				onEnter: () => {
+					const letters = [letterFxTriggerRef5, letterFxTriggerRef6]
+
+					letters.forEach(item => {
+						item.current?.()
+					})
+				},
+				once: true,
+				markers: true,
+			})
+		}
 
 		const textElement = screenRefs.current[2]?.text
 
@@ -120,23 +146,7 @@ export default function Home() {
 					})
 				},
 				once: true,
-			})
-		}
-
-		const age = screenRefs.current[1]?.text
-
-		if (age) {
-			ScrollTrigger.create({
-				trigger: age,
-				start: 'bottom bottom',
-				onEnter: () => {
-					const letters = [letterFxTriggerRef5, letterFxTriggerRef6]
-
-					letters.forEach(item => {
-						item.current?.()
-					})
-				},
-				once: true,
+				markers: true,
 			})
 		}
 
