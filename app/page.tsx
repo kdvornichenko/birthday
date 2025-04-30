@@ -459,7 +459,7 @@ export default function Home() {
 					{/* Анкета */}
 					<Block className='flex flex-col justify-center'>
 						<Heading
-							text='А теперь к главному'
+							text='А теперь к анкете'
 							ref={getRefFunction(10, 'heading')}
 						/>
 
