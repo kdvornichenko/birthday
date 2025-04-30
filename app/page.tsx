@@ -406,7 +406,7 @@ export default function Home() {
 						<Text>
 							<Heading text='Где?' ref={getRefFunction(3, 'heading')} />
 							<Paragraph ref={getRefFunction(3, 'text')} className='opacity-0'>
-								Зыряновск (Алтай, кому как), ресторан &laquo;Эдельвейс&raquo;
+								Зыряновск (Алтай, кому как), ресторан &quot;Эдельвейс&quot;
 								<br />
 								<span className='font-semibold'>
 									Адрес:
