@@ -269,10 +269,6 @@ export default function Home() {
 		}
 	}, [showFormModal, lenis])
 
-	function HtmlText({ text }: { text: string }) {
-		return <span dangerouslySetInnerHTML={{ __html: text }} />
-	}
-
 	return (
 		<ReactLenis
 			root
