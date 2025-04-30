@@ -23,7 +23,7 @@ const gyreMono = localFont({
 
 export const metadata: Metadata = {
 	title: 'Приглашение на День Рождения',
-	description: '',
+	description: 'Приглашение на День Рождения 🎂🥳',
 	robots: 'noindex, nofollow',
 }
 
