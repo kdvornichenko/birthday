@@ -27,9 +27,6 @@ import FormModal from '@/components/FormModal'
 import useFormState from '@/store/form.store'
 import Link from 'next/link'
 import { Heart } from '@/components/icons/IconHeart'
-import { useSearchParams } from 'next/navigation'
-import { Translations, useTranslation } from '@/lib/i18n'
-import { useLangStore } from '@/store/lang.store'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -52,11 +49,6 @@ export default function Home() {
 		>
 	>({})
 
-	const searchParams = useSearchParams()
-
-	const { t } = useTranslation()
-	const setLang = useLangStore(state => state.setLang)
-
 	const containerRef = useRef<HTMLDivElement>(null)
 	const addressRef = useRef<HTMLAnchorElement>(null)
 	const fingerRef = useRef<SVGSVGElement>(null)
@@ -67,7 +59,6 @@ export default function Home() {
 	const letterFxTriggerRef5 = useRef<() => void>()
 	const letterFxTriggerRef6 = useRef<() => void>()
 	const lenis = useLenis()
-	const address = t('address') as Translations['RU']['address']
 
 	const refFunctions = useRef<Record<string, (el: HTMLElement | null) => void>>(
 		{}
@@ -94,20 +85,8 @@ export default function Home() {
 		[]
 	)
 
-	useEffect(() => {
-		const langParam = searchParams.get('lang')
-
-		if (langParam === 'ru') {
-			setLang('RU')
-		} else if (langParam === 'en') {
-			setLang('EN')
-		}
-	}, [searchParams, setLang])
-
 	useLayoutEffect(() => {
 		setIsMapLoaded(true)
-
-		console.log(screenRefs)
 
 		const age = screenRefs.current[4]?.text
 
@@ -305,14 +284,20 @@ export default function Home() {
 
 			<div ref={containerRef} className='relative bg-stone-50 z-10 '>
 				<div className='relative z-20'>
-					<SlideShow totalImages={6} />
+					<SlideShow totalImages={3} />
 
 					{/* Начало */}
 					<Block className='py-10 items-center flex'>
 						<Text className='py-10 xl:py-20'>
 							<Heading text='Что?' ref={getRefFunction(1, 'heading')} />
 							<Paragraph ref={getRefFunction(1, 'text')}>
-								<HtmlText text={t('guests')} />
+								Никогда такого не было и вот опять! Начиная аж с 1975 и каждый
+								следующий год, в одну и ту же дату, происходит событие, которое
+								всем нам так хорошо известно &dash; День Рождения!
+								<br />
+								<br />
+								Но в этот раз не шуточки, не хухры-мухры, дело серьезное,
+								серьезнее некуда!
 							</Paragraph>
 						</Text>
 					</Block>
@@ -413,12 +398,9 @@ export default function Home() {
 									/>
 									.2025
 								</span>
-								<Paragraph
-									customSize
-									className='text-center text-4xl md:text-5xl whitespace-nowrap mt-10'
-								>
+								<span className='block text-center text-4xl md:text-5xl whitespace-nowrap mt-10'>
 									Ровно в 15:00
-								</Paragraph>
+								</span>
 							</Paragraph>
 						</Text>
 					</Block>
@@ -428,19 +410,17 @@ export default function Home() {
 						<Text>
 							<Heading text='Где?' ref={getRefFunction(3, 'heading')} />
 							<Paragraph ref={getRefFunction(3, 'text')} className='opacity-0'>
-								<HtmlText text={address.placeText1} />
+								Зыряновск (Алтай, кому как), ресторан "Эдельвейс"
 								<br />
 								<span className='font-semibold'>
-									<HtmlText text={address.atAddress} />
-
+									Адрес:
 									<a
 										href='https://yandex.ru/maps/29492/altay/?ll=84.262912%2C49.714914&mode=poi&poi%5Bpoint%5D=84.263075%2C49.715063&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D55227339221&z=18'
 										target='_blank'
 										ref={addressRef}
 										className=' border px-1 pb-1 border-slate-950/0 rounded-md relative inline-block translate-y-0.5  will-change-transform'
 									>
-										<HtmlText text={address.addressText} />
-
+										ул. Тохтарова 2 (хотя все и так знают)
 										<Finger
 											ref={fingerRef}
 											className='absolute w-8 h-8 end-4 top-full translate-y-1/2 opacity-0 will-change-transform'
@@ -459,7 +439,7 @@ export default function Home() {
 					{/* Анкета */}
 					<Block className='flex flex-col justify-center'>
 						<Heading
-							text='А теперь к анкете'
+							text='А теперь к главному'
 							ref={getRefFunction(10, 'heading')}
 						/>
 

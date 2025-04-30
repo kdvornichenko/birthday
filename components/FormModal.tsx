@@ -12,7 +12,6 @@ import TelegramLink from './TelegramLink'
 import { Snippet } from '@nextui-org/snippet'
 import { Button } from '@nextui-org/button'
 import useFormState from '@/store/form.store'
-import { Translations, useTranslation } from '@/lib/i18n'
 import { BirthdayCake } from './icons/IconBirthdayCake'
 
 const FormModal = () => {
@@ -23,11 +22,6 @@ const FormModal = () => {
 		willBeAttended,
 		formError,
 	} = useFormState()
-
-	const { t } = useTranslation()
-	const formSendedTranslation = t(
-		'formSendedModal'
-	) as Translations['RU']['formSendedModal']
 
 	return (
 		<Modal
@@ -41,26 +35,27 @@ const FormModal = () => {
 				{onClose => (
 					<>
 						<ModalHeader className='flex flex-col gap-1 font-kudry text-3xl'>
-							{formSended
-								? formSendedTranslation.success
-								: formSendedTranslation.error}
+							{formSended ? 'Отправлено!' : 'Ошибка при отправке формы'}
 						</ModalHeader>
 
 						<ModalBody className='font-gyre-mono text-xl'>
 							{formSended ? (
 								willBeAttended ? (
 									<div className='flex flex-col gap-y-4'>
-										<span>{formSendedTranslation.successAttendedTitle}</span>
+										<span>Спасибо! С нетерпением Вас ждем!</span>
 									</div>
 								) : (
 									<div className='flex flex-col gap-y-4'>
-										<span>{formSendedTranslation.successNotAttendedTitle}</span>
+										<span>Очень жаль 😢</span>
 									</div>
 								)
 							) : (
 								<div className='flex flex-col gap-y-4'>
 									<div>
-										<span>{formSendedTranslation.errorCopyInstruction} </span>
+										<span>
+											'Ошибка при отправке формы. Пожалуйста, скопируйте это
+											сообщение, нажав на значок '
+										</span>
 										<Snippet
 											symbol=''
 											variant='bordered'
@@ -72,7 +67,7 @@ const FormModal = () => {
 											}}
 										/>
 
-										<span>{formSendedTranslation.errorScreenshot} </span>
+										<span>(или сделайте скриншот) и отправьте мне</span>
 										<TelegramLink person='k' />
 									</div>
 
@@ -84,10 +79,6 @@ const FormModal = () => {
 									>
 										{formError}
 									</Snippet>
-
-									<span className='text-xs opacity-30'>
-										{formSendedTranslation.errorNote}
-									</span>
 								</div>
 							)}
 						</ModalBody>
