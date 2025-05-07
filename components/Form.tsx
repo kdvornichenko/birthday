@@ -493,7 +493,6 @@ const Form = forwardRef<HTMLFormElement, TForm>(({ className }, ref) => {
 							size='lg'
 							placeholder={item.label}
 							isDisabled={isDisabled(item.id)}
-							isRequired
 							classNames={{
 								inputWrapper: `transition-all mt-4 lg:mt-6 ${
 									errors[item.id] ? 'border-red-500' : inputClassNames
